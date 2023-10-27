@@ -1,4 +1,4 @@
-import express, { application } from "express";
+import express from "express";
 //Arreglando lo de la ubicacion de ejs
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
