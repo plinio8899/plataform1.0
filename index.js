@@ -9,7 +9,7 @@ import userRoute from "./Routes/users.routes.js"
 import authRoute from "./Routes/auth.routes.js"
 import dashRoute from "./Routes/dashboard.routes.js"
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 //Arreglando lo de la ubicacion de ejs
 const __filename = fileURLToPath(import.meta.url);
