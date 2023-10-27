@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+    integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
+    crossorigin="anonymous"
+  />
+  <style>
+    .bac{
+        display: flex !important;
+        align-items: center;
+    }
+  </style>
+    <title>Bienvenido</title>
+</head>
+<body>
+    <% if(!id) {%>
+        <h1>ha ocurrido un error con la sessión</h1>
+        <a href="/auth">Volver a iniciar sesion</a>
+    <% } else{ %>
+        <% if(cuest == 1){ %>
+            <div class="container">
+                <br>
+                <div class="bac">
+                    <a href="/dashboard?id=<%= id %>"><ion-icon name="arrow-round-back" class="btn-dark" size="large"></ion-icon></a>
+                </div>
+                <br>
+                <center>
+                    <h1 class="display-4">Tareas</h1>
+                    <hr>
+                </center>
+                <br><br>
+                <div class="alert alert-dark" role="alert">
+                    <center>
+                        <label>¡Hay un cuestionario desponible!</label>
+                        <br>
+                        <a class="btn btn-dark" href="#" role="button">Realizar</a>
+                    </center>
+                </div>
+            </div>
+        <% } else {%>
+            <div class="container">
+                <br>
+                <div class="bac">
+                    <a href="/dashboard?id=<%= id %>"><ion-icon name="arrow-round-back" class="btn-dark" size="large"></ion-icon></a>
+                </div>
+                <br>
+                <center>
+                    <h1 class="display-4">Tareas</h1>
+                    <hr>
+                </center>
+                <br><br>
+                <div class="alert alert-dark" role="alert">
+                    <center>
+                        <span>No hay cuestionarios disponibles...</span>
+                    </center>
+                </div>
+            </div>
+        <% } %>
+    <% } %>
+
+    <script src="./js/retro.js"></script>
+    <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
+</body>
+</html>

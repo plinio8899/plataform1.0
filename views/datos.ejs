@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+    integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
+    crossorigin="anonymous"
+  />
+  <style>
+    .bac{
+        display: flex !important;
+        align-items: center;
+    }
+  </style>
+    <title>Bienvenido</title>
+</head>
+<body>
+    <% if(id){ %>
+        <div class="container">
+            <br>
+            <div class="bac">
+                <a href="/dashboard?id=<%= id %>"><ion-icon name="arrow-round-back" class="btn-dark" size="large"></ion-icon></a>
+            </div>
+            <br>
+            <center>
+                <h1 class="display-4">Perfil</h1>
+                <hr>
+            </center>
+            <br><br>
+            <div class="alert alert-dark" role="alert">
+                <center>
+                    <span><ion-icon name="<%= sexo %>" size="large"></ion-icon></span>
+                </center>
+            </div>
+            <div class="alert alert-dark" role="alert">
+                <span class="btn"><ion-icon name="key" size="large"></ion-icon></span>
+                <span style="margin-left: 2px;"><b>ID de usuario:</b> <%= id %></span>
+                <br>
+                <a class="btn"><ion-icon name="contact" size="large"></ion-icon></a>
+                <span style="margin-left: 2px;"><b>Nombre:</b> <%= usuario %></span>
+                <br>
+                <a class="btn"><ion-icon name="call" size="large"></ion-icon></a>
+                <span style="margin-left: 2px;"><b>Telefono:</b> +57 <%= phone %></span>
+                <br>
+                <a class="btn"><ion-icon size="large" name="star"></ion-icon></a>
+                <span style="margin-left: 2px;"><b>Rango:</b> <%= rango %></span>
+            </div>
+            <div class="alert alert-dark" role="alert">
+                <label><b>Codigo:</b></label>
+                <input type="number" class="form-control">
+                <br>
+                <button type="submit" class="btn btn-dark">Enviar</button>
+            </div>
+        </div>
+    <% } else {%>
+        <h1>ha ocurrido un error con la sessión</h1>
+        <a href="/auth">Volver a iniciar sesion</a>
+    <% } %>
+
+    <script src="./js/retro.js"></script>
+    <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
+</body>
+</html>
