@@ -17,7 +17,8 @@ router.get('/', async (req, res) => {
         const sexo = passBd.sexo
         const rango = passBd.rango
         const cuest = passBd.cuesStatus
-        res.render('dash', {id, usuario, phone, sexo, rango, cuest});
+        const rol = passBd.rol
+        res.render('dash', {id, usuario, phone, sexo, rango, cuest, rol});
     } catch (error) {
         res.send(error.message)
     }
@@ -38,7 +39,7 @@ router.get('/datos', async (req, res) => {
         const cuest = passBd.cuesStatus
         res.render('datos', {id, usuario, phone, sexo, rango, cuest})
     } catch (error) {
-        
+        res.send(error.message)
     }
 })
 
@@ -55,9 +56,271 @@ router.get('/tareas', async (req, res) => {
         const sexo = passBd.sexo
         const rango = passBd.rango
         const cuest = passBd.cuesStatus
-        res.render('ant-cuest', {id, usuario, phone, sexo, rango, cuest})
+        const rol = passBd.rol
+        res.render('ant-cuest', {id, usuario, phone, sexo, rango, cuest, rol})
     } catch (error) {
-        
+        res.send(error.message)
+    }
+})
+
+router.get('/tareas/cuestionario', async (req, res) => {
+    try {
+        const id = parseInt(req.query.id)
+        const passBd = await db.users.findFirst({
+            where: {
+                id: id
+            }
+        })
+        const cuest = passBd.cuesStatus
+        const cuesBd = await db.cuest.findMany()
+        res.render('cuestionario', {id, cuest, cuesBd})
+    } catch (error) {
+        res.send("Hello" + error.message)
+    }
+})
+
+router.get('/tareas/cuestionario/revision', async (req, res) => {
+    try {
+        const rev = req.query.points
+        const id = req.query.id
+        res.render('resultado', {id, rev})
+    } catch (error) {
+        res.send("Error: " + error.message)
+    }
+})
+
+
+router.post('/tareas/cuestionario', async (req, res) => {
+    try {
+        const respuesta1 = req.body[0]
+        const respuesta2 = req.body[1]
+        const respuesta3 = req.body[2]
+        const respuesta4 = req.body[3]
+        const respuesta5 = req.body[4]
+        const respuesta6 = req.body[5]
+        const respuesta7 = req.body[6]
+        const respuesta8 = req.body[7]
+        const respuesta9 = req.body[8]
+        const respuesta10 = req.body[9]
+        const id = parseInt(req.query.id)
+        let points = 0
+        const cuesBd = await db.cuest.findMany()
+        if(cuesBd[0].repTrue == respuesta1){
+            points = points + cuesBd[0].cuestPoints
+        }
+        if(cuesBd[1].repTrue == respuesta2){
+            points = points + cuesBd[1].cuestPoints
+        }
+        if(cuesBd[2].repTrue == respuesta3){
+            points = points + cuesBd[2].cuestPoints
+        }
+        if(cuesBd[3].repTrue == respuesta4){
+            points = points + cuesBd[3].cuestPoints
+        }
+        if(cuesBd[4].repTrue == respuesta5){
+            points = points + cuesBd[4].cuestPoints
+        }
+        if(cuesBd[5].repTrue == respuesta6){
+            points = points + cuesBd[5].cuestPoints
+        }
+        if(cuesBd[6].repTrue == respuesta7){
+            points = points + cuesBd[6].cuestPoints
+        }
+        if(cuesBd[7].repTrue == respuesta8){
+            points = points + cuesBd[7].cuestPoints
+        }
+        if(cuesBd[8].repTrue == respuesta9){
+            points = points + cuesBd[8].cuestPoints
+        }
+        if(cuesBd[9].repTrue == respuesta10){
+            points = points + cuesBd[9].cuestPoints
+        }
+
+        const getUser = await db.users.findFirst({
+            where: {
+                id: id
+            }
+        })
+
+        let oldPoints = getUser.points
+        let totalOldPoints = getUser.totalPoints
+
+        let pointsResult = oldPoints + points
+        let totalPointsresult = totalOldPoints + points
+
+        const changeStatusCues = await db.users.update({
+            where: {
+                id: id
+            },
+            data: {
+                cuesStatus: 0,
+                points: pointsResult,
+                totalPoints: totalPointsresult
+            }
+        })
+        res.redirect(`/dashboard/tareas/cuestionario/revision?id=${id}&points=${points}`)
+    } catch (error) {
+        res.send("Hola" + error.message)
+    }
+
+})
+
+router.get('/puntos', async (req, res) => {
+    try {
+        const id = parseInt(req.query.id)
+    
+        const getUser = await db.users.findFirst({
+            where: {
+                id: id
+            }
+        })
+    
+        const totalPoints = getUser.totalPoints
+        const currentPoints = getUser.points
+        const rol = getUser.rol
+    
+        res.render('puntos', {id, totalPoints, currentPoints, rol})
+    } catch (error) {
+        res.send(error.message)
+    }
+
+})
+
+router.post('/puntos', async (req, res) => {
+    try {
+        const id = parseInt(req.query.id)
+        const pushHombres = await db.users.aggregate({
+            where: {
+                sexo: "man"
+            },
+            _sum: {
+                points: true
+            }
+        })
+        const pushMujeres = await db.users.aggregate({
+            where: {
+                sexo: "woman"
+            },
+            _sum: {
+                points: true
+            }
+        })
+        let hPoints = parseInt(pushHombres._sum.points)
+        let mPoints = parseInt(pushMujeres._sum.points)
+        await db.points.update({
+            where: {
+                id: 1
+            },
+            data: {
+                man: hPoints,
+                woman: mPoints
+            }
+        })
+
+        await db.users.updateMany({
+            data: {
+                points: 0
+            }
+        })
+
+        res.redirect(`/dashboard/puntos?id=${id}`)
+    } catch (error) {
+        res.send(error.message)
+    }
+})
+
+router.post('/tareas', async (req, res) => {
+    try {
+        const id = parseInt(req.query.id)
+        const estado = parseInt(req.body.estado)
+        if(estado){
+            const getAllusers = await db.users.updateMany({
+                where: {
+                    NOT: {
+                        rol: "Administrador"
+                    }
+                },
+                data: {
+                    cuesStatus: estado
+                }
+            })
+            res.redirect(`/dashboard/tareas?id=${id}`)
+        }else{
+            const idp = parseInt(req.body.idp)
+            const preg = req.body.preg
+            const op1 = req.body.op1
+            const op2 = req.body.op2
+            const op3 = req.body.op3
+            const op4 = req.body.op4
+            const repTrue = req.body.repTrue
+            const cuestPoints = parseInt(req.body.cuestPoints)
+
+            const updateCuest = await db.cuest.update({
+                where:{
+                    id: idp
+                },
+                data: {
+                    preg: preg,
+                    op1: op1,
+                    op2: op2,
+                    op3: op3,
+                    op4: op4,
+                    repTrue: repTrue,
+                    cuestPoints: cuestPoints
+                }
+            })
+            res.redirect(`/dashboard/tareas?id=${id}`)
+        }
+    } catch (error) {
+        res.send(error.message)
+    }
+})
+
+router.get('/ocult/puntos', (req, res) => {
+    try {
+        const id = req.query.id
+        res.render('puntos-p', {id})
+    } catch (error) {
+        res.send(error.message)
+    }
+})
+router.post('/ocult/puntos', async(req, res) => {
+    try {
+        const id = parseInt(req.query.id)
+        const puntos = parseInt(req.body.puntos)
+        const sexo = req.body.sexo
+
+        const pointsBd = await db.points.findMany()
+        let hPoints = parseInt(pointsBd[0].man)
+        let mPoints = parseInt(pointsBd[0].woman)
+        let tPoints = 0
+
+        if(sexo == "man"){
+           tPoints = hPoints + puntos
+            await db.points.update({
+                where: {
+                    id: 1
+                },
+
+                data: {
+                    man: tPoints
+                }
+            })
+        }else if(sexo == "woman"){
+            tPoints = mPoints + puntos
+            await db.points.update({
+                where: {
+                    id: 1
+                },
+
+                data: {
+                    woman: tPoints
+                }
+            })
+        }
+        res.redirect(`/dashboard/ocult/puntos?id=${id}`)
+    } catch (error) {
+        res.send(error.message)
     }
 })
 

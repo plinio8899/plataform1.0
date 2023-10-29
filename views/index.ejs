@@ -14,7 +14,6 @@
         margin: 0;
         padding: 0;
         overflow-x: hidden;
-        overflow-y: hidden;
     }
   </style>
     <title>Home page</title>
@@ -277,11 +276,18 @@
     </div>
     <center>
         <div class="container">
-            <h1 class="display-4 text-dark">jovenes <br> IPDC</h1>
+            <h1 class="display-4 text-dark">Jovenes <br> IPDC</h1>
         </div>
-        <br><br>
+        <span><ion-icon name="man" size="large"></ion-icon></span>
+        <span><ion-icon name="woman" size="large"></ion-icon></span>
+        <br>
+        <span class="btn"><%= pMan %></span>
+        <span class="btn"><%= pWoman %></span>
+        <br><br><br><br>
         <a class="btn btn-dark" href="/auth" role="button"><ion-icon name="contact" size="large"></ion-icon></a>
+        <br>
         <span style="margin-left: 2px;">Inicia Sesión</span>
+        <br><br><br>
     </center>
     <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
   </body>

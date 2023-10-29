@@ -19,38 +19,73 @@
 </head>
 <body>
     <% if(id){ %>
-        <div class="container">
-            <br>
-            <div class="bac">
-                <a href="/" class="btn btn-dark"><ion-icon name="log-out" class="btn-dark"></ion-icon></a>
-                <span style="margin-left: 5px;">Cerrar Sesión</span>
-            </div>
-            <br>
-            <center>
-                <h1 class="display-4">Inicio</h1>
-                <hr>
-            </center>
-            <br><br>
-            <div class="alert alert-dark" role="alert">
-                <span>Te damos la bienvenida <b><%= usuario %></b></span>
-            </div>
-            <div class="alert alert-dark" role="alert">
-                <a class="btn btn-dark" href="/dashboard/datos?id=<%= id %>" role="button"><ion-icon name="man"></ion-icon></a>
-                <span style="margin-left: 2px;">Perfil</span>
+        <% if(rol == "Administrador") {%>
+            <div class="container">
+                <br>
+                <div class="bac">
+                    <a href="/" class="btn btn-dark"><ion-icon name="log-out" class="btn-dark"></ion-icon></a>
+                    <span style="margin-left: 5px;">Cerrar Sesión</span>
+                </div>
+                <br>
+                <center>
+                    <h1 class="display-4">Admin</h1>
+                    <hr>
+                </center>
                 <br><br>
-                <a class="btn btn-dark" href="/dashboard/tareas?id=<%= id %>" role="button"><ion-icon name="paper"></ion-icon></a>
-                <span style="margin-left: 2px;">Tareas</span>
-                <br><br>
-                <a class="btn btn-dark" href="#" role="button"><ion-icon name="checkbox"></ion-icon></a>
-                <span style="margin-left: 2px;">Puntos ganados</span>
-                <br><br>
-                <a class="btn btn-dark" href="#" role="button"><ion-icon name="people"></ion-icon></a>
-                <span style="margin-left: 2px;">Sistema de rangos</span>
+                <div class="alert alert-dark" role="alert">
+                    <span>Te damos la bienvenida <b><%= usuario %></b></span>
+                </div>
+                <div class="alert alert-dark" role="alert">
+                    <a class="btn btn-dark" href="/users?id=<%= id %>" role="button"><ion-icon name="man"></ion-icon></a>
+                    <span style="margin-left: 2px;">Agregar usuario</span>
+                    <br><br>
+                    <a class="btn btn-dark" href="/dashboard/tareas?id=<%= id %>" role="button"><ion-icon name="paper"></ion-icon></a>
+                    <span style="margin-left: 2px;">Gestionar cuestionarios</span>
+                    <br><br>
+                    <a class="btn btn-dark" href="/dashboard/puntos?id=<%= id %>" role="button"><ion-icon name="checkbox"></ion-icon></a>
+                    <span style="margin-left: 2px;">Gestionar puntos</span>
+                    <br><br>
+                    <a class="btn btn-dark" href="#" role="button"><ion-icon name="people"></ion-icon></a>
+                    <span style="margin-left: 2px;">Gestionar rangos y roles</span>
+                </div>
+                <div class="alert alert-dark" role="alert">
+                    <span><b>Aviso:</b> el modo desarrolador solo es para uso de los administradores.</span>
+                </div>
             </div>
-            <div class="alert alert-dark" role="alert">
-                <span><b>Aviso:</b> el modo desarrolador solo es para uso de los administradores.</span>
+        <% }else { %>
+            <div class="container">
+                <br>
+                <div class="bac">
+                    <a href="/" class="btn btn-dark"><ion-icon name="log-out" class="btn-dark"></ion-icon></a>
+                    <span style="margin-left: 5px;">Cerrar Sesión</span>
+                </div>
+                <br>
+                <center>
+                    <h1 class="display-4">Inicio</h1>
+                    <hr>
+                </center>
+                <br><br>
+                <div class="alert alert-dark" role="alert">
+                    <span>Te damos la bienvenida <b><%= usuario %></b></span>
+                </div>
+                <div class="alert alert-dark" role="alert">
+                    <a class="btn btn-dark" href="/dashboard/datos?id=<%= id %>" role="button"><ion-icon name="man"></ion-icon></a>
+                    <span style="margin-left: 2px;">Perfil</span>
+                    <br><br>
+                    <a class="btn btn-dark" href="/dashboard/tareas?id=<%= id %>" role="button"><ion-icon name="paper"></ion-icon></a>
+                    <span style="margin-left: 2px;">Tareas</span>
+                    <br><br>
+                    <a class="btn btn-dark" href="/dashboard/puntos?id=<%= id %>" role="button"><ion-icon name="checkbox"></ion-icon></a>
+                    <span style="margin-left: 2px;">Puntos ganados</span>
+                    <br><br>
+                    <a class="btn btn-dark" href="#" role="button"><ion-icon name="people"></ion-icon></a>
+                    <span style="margin-left: 2px;">Sistema de rangos</span>
+                </div>
+                <div class="alert alert-dark" role="alert">
+                    <span><b>Aviso:</b> el modo desarrolador solo es para uso de los administradores.</span>
+                </div>
             </div>
-        </div>
+        <% } %>
     <% } else {%>
         <h1>Error al iniciar sesion</h1>
         <a href="/auth">Volver a iniciar sesion</a>

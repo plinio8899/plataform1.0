@@ -22,7 +22,7 @@
         <h1>ha ocurrido un error con la sessión</h1>
         <a href="/auth">Volver a iniciar sesion</a>
     <% } else{ %>
-        <% if(cuest == 1){ %>
+        <% if(rol == "Administrador"){ %>
             <div class="container">
                 <br>
                 <div class="bac">
@@ -30,36 +30,90 @@
                 </div>
                 <br>
                 <center>
-                    <h1 class="display-4">Tareas</h1>
+                    <h1 class="display-4">Cuestionario</h1>
                     <hr>
                 </center>
                 <br><br>
                 <div class="alert alert-dark" role="alert">
-                    <center>
-                        <label>¡Hay un cuestionario desponible!</label>
+                    <h5>Estado de cuestionario</h5>
+                    <form action="/dashboard/tareas?id=<%= id %>" method="POST">
+                        <label for="estado">Estado de cuestionarios:</label>
+                        <input type="number" name="estado">
+                        <button type="submit" class="btn btn-dark">Cambiar</button>
+                    </form>
+                </div>
+                <div class="alert alert-dark" role="alert">
+                    <form action="/dashboard/tareas?id=<%= id %>" method="POST">
+                        <h5>Añade el cuetionario</h5>
                         <br>
-                        <a class="btn btn-dark" href="#" role="button">Realizar</a>
-                    </center>
+                        <label for="idp">id:</label>
+                        <input type="number" name="idp" class="form-control">
+                        <br>
+                        <label for="preg">Pregunta:</label>
+                        <input type="text" name="preg" class="form-control">
+                        <br>
+                        <label for="op1">Opcion 1:</label>
+                        <input type="text" name="op1" class="form-control">
+                        <br>
+                        <label for="op2">Opcion 2:</label>
+                        <input type="text" name="op2" class="form-control">
+                        <br>
+                        <label for="op3">Opcion 3:</label>
+                        <input type="text" name="op3" class="form-control">
+                        <br>
+                        <label for="op4">Opcion 4:</label>
+                        <input type="text" name="op4" class="form-control">
+                        <br>
+                        <label for="repTrue">Respuesta:</label>
+                        <input type="text" name="repTrue" class="form-control">
+                        <br>
+                        <label for="cuestPoints">Puntos</label>
+                        <input type="number" name="cuestPoints" class="form-control">
+                        <br><br>
+                        <button type="submit" class="btn btn-dark">Publicar</button>
+                    </form>
                 </div>
             </div>
-        <% } else {%>
-            <div class="container">
-                <br>
-                <div class="bac">
-                    <a href="/dashboard?id=<%= id %>"><ion-icon name="arrow-round-back" class="btn-dark" size="large"></ion-icon></a>
-                </div>
-                <br>
-                <center>
-                    <h1 class="display-4">Tareas</h1>
-                    <hr>
-                </center>
-                <br><br>
-                <div class="alert alert-dark" role="alert">
+        <% } else { %>
+            <% if(cuest == 1){ %>
+                <div class="container">
+                    <br>
+                    <div class="bac">
+                        <a href="/dashboard?id=<%= id %>"><ion-icon name="arrow-round-back" class="btn-dark" size="large"></ion-icon></a>
+                    </div>
+                    <br>
                     <center>
-                        <span>No hay cuestionarios disponibles...</span>
+                        <h1 class="display-4">Tareas</h1>
+                        <hr>
                     </center>
+                    <br><br>
+                    <div class="alert alert-dark" role="alert">
+                        <center>
+                            <label>¡Hay un cuestionario desponible!</label>
+                            <br>
+                            <a class="btn btn-dark" href="/dashboard/tareas/cuestionario?id=<%= id %>" role="button">Realizar</a>
+                        </center>
+                    </div>
                 </div>
-            </div>
+            <% } else {%>
+                <div class="container">
+                    <br>
+                    <div class="bac">
+                        <a href="/dashboard?id=<%= id %>"><ion-icon name="arrow-round-back" class="btn-dark" size="large"></ion-icon></a>
+                    </div>
+                    <br>
+                    <center>
+                        <h1 class="display-4">Tareas</h1>
+                        <hr>
+                    </center>
+                    <br><br>
+                    <div class="alert alert-dark" role="alert">
+                        <center>
+                            <span>No hay cuestionarios disponibles...</span>
+                        </center>
+                    </div>
+                </div>
+            <% } %>
         <% } %>
     <% } %>
 

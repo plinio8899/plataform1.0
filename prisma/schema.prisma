@@ -19,6 +19,7 @@ model Users {
   cuesStatus Int?
   rango String?
   rol String?
+  totalPoints Int?
   sexo String
 }
 
@@ -29,6 +30,27 @@ model Cuest {
   op2 String
   op3 String
   op4 String
-  repTrue Int
+  repTrue String
   cuestPoints Int
 }
+
+model Points {
+  id Int @id @default(autoincrement())
+  man Int
+  woman Int
+}
+
+model Sms {
+  author Int @id
+  content String
+}
+
+model Feed {
+  id Int @id @default(autoincrement())
+  author Int
+  description String
+}
+
+model Codes {
+  code Int @id
+} 

@@ -8,6 +8,9 @@ import cors from "cors";
 import userRoute from "./Routes/users.routes.js"
 import authRoute from "./Routes/auth.routes.js"
 import dashRoute from "./Routes/dashboard.routes.js"
+import { PrismaClient } from "@prisma/client"
+
+const db = new PrismaClient();
 
 const port = process.env.PORT || 3000;
 
@@ -35,8 +38,16 @@ app.use("/auth", authRoute);
 app.use("/dashboard", dashRoute);
 app.use(express.json());
 
-app.get('/', (req, res) => {
-    res.render('index', {id: 123})
+app.get('/', async(req, res) => {
+    try {
+        const tPoints = await db.points.findMany()
+        const pMan = parseInt(tPoints[0].man)
+        const pWoman = parseInt(tPoints[0].woman)
+        console.log(tPoints)
+        res.render('index', {id: 123, pMan, pWoman})
+    } catch (error) {
+        res.send(error.message)
+    }
 })
 
 

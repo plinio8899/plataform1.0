@@ -20,7 +20,8 @@ export const postUser = async (phone, name, password, sexo) => {
                 cuesStatus: 0,
                 rango: "Novato",
                 rol: "Indefinido",
-                sexo: sexo
+                sexo: sexo,
+                totalPoints: 0
             }
         })
         if(newUser.id){
