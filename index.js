@@ -40,14 +40,13 @@ app.use(express.json());
 
 app.get('/', async(req, res) => {
     try {
-        const tPoints = await db.points.findFirst({
+        const tPoints = await db.points.findMany({
             where: {
                 id: 1
             }
         })
         const pMan = parseInt(tPoints[0].man)
         const pWoman = parseInt(tPoints[0].woman)
-        console.log(tPoints)
         res.render('index', {id: 123, pMan, pWoman})
     } catch (error) {
         res.send(error.message)
