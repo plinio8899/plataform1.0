@@ -324,4 +324,65 @@ router.post('/ocult/puntos', async(req, res) => {
     }
 })
 
+router.get('/rangos', async (req, res) => {
+    try {
+        const id = parseInt(req.query.id)
+        const passBd = await db.users.findFirst({
+            where: {
+                id: id
+            }
+        })
+        const usuario = passBd.name
+        const phone = passBd.phone
+        const sexo = passBd.sexo
+        const rango = passBd.rango
+        const cuest = passBd.cuesStatus
+        const rol = passBd.rol
+        res.render('rangos', {id, usuario, phone, sexo, rango, cuest, rol})
+    } catch (error) {
+        res.send(error.message)
+    }
+})
+
+router.get('/game1', async (req, res) => {
+    try {
+        const id = parseInt(req.query.id)
+        const passB = await db.users.findFirst({
+            where: {
+                id: id
+            }
+        })
+        const cuest = passB.cuesStatus
+        res.render('game1', {id, cuest})
+    } catch (error) {
+        res.send(error.message)
+    }
+})
+
+router.get('/gamepoints', async(req, res) => {
+    try {
+        const id = parseInt(req.query.id)
+        const ponts = parseInt(req.query.points)
+        const passB = await db.users.findFirst({
+            where: {
+                id: id
+            }
+        })
+        const oldPoints = passB.points
+        let cuest = passB.cuesStatus
+        let result = oldPoints + ponts
+        const passBd = await db.users.update({
+            where: {
+                id: id
+            },
+            data: {
+                points: result,
+                cuesStatus: cuest -1
+            }
+        })
+        res.redirect(`/dashboard/game1?id=${id}`)
+    } catch (error) {
+        res.send(error.message)
+    }
+})
 export default router;
