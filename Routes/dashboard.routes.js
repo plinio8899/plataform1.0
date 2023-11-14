@@ -189,6 +189,11 @@ router.get('/puntos', async (req, res) => {
 router.post('/puntos', async (req, res) => {
     try {
         const id = parseInt(req.query.id)
+        const setPoints = await db.points.findFirst({
+            where: {
+                id: 1,
+            }
+        })
         const pushHombres = await db.users.aggregate({
             where: {
                 sexo: "man"
@@ -205,8 +210,8 @@ router.post('/puntos', async (req, res) => {
                 points: true
             }
         })
-        let hPoints = parseInt(pushHombres._sum.points)
-        let mPoints = parseInt(pushMujeres._sum.points)
+        let hPoints = parseInt(pushHombres._sum.points) + parseInt(setPoints.man)
+        let mPoints = parseInt(pushMujeres._sum.points) + parseInt(setPoints.woman)
         await db.points.update({
             where: {
                 id: 1
@@ -223,6 +228,7 @@ router.post('/puntos', async (req, res) => {
             }
         })
 
+        console.log("Hombres: " + hPoints + " Mujeres: " + mPoints)
         res.redirect(`/dashboard/puntos?id=${id}`)
     } catch (error) {
         res.send(error.message)
@@ -368,15 +374,18 @@ router.get('/gamepoints', async(req, res) => {
                 id: id
             }
         })
-        const oldPoints = passB.points
+        const oldPoints = parseInt(passB.points)
+        const oldTotalPoints = parseInt(passB.totalPoints)
         let cuest = passB.cuesStatus
         let result = oldPoints + ponts
+        let result2 = oldTotalPoints + ponts
         const passBd = await db.users.update({
             where: {
                 id: id
             },
             data: {
                 points: result,
+                totalPoints: result2,
                 cuesStatus: cuest -1
             }
         })
