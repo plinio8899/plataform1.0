@@ -102,9 +102,16 @@
                                 name="man"></ion-icon></a>
                         <span style="margin-left: 2px;">Perfil</span>
                         <br><br>
-                        <a class="btn btn-dark" href="/dashboard/tareas?id=<%= id %>" role="button"><ion-icon
-                                name="paper"></ion-icon></a>
-                        <span style="margin-left: 2px;">Tareas</span>
+                        <% if(cuest == 1) {%>
+                            <span style="color: rgb(255, 255, 255); background-color: rgb(196, 3, 3); border-radius: 16px; font-size: 1em; padding: 4px;">1</span>
+                            <a class="btn btn-dark" href="/dashboard/tareas?id=<%= id %>" role="button"><ion-icon
+                            name="paper"></ion-icon></a>
+                            <span style="margin-left: 2px;">Tareas</span>
+                        <% } else{ %>
+                            <a class="btn btn-dark" href="/dashboard/tareas?id=<%= id %>" role="button"><ion-icon
+                                    name="paper"></ion-icon></a>
+                            <span style="margin-left: 2px;">Tareas</span>
+                        <% } %>
                         <br><br>
                         <a class="btn btn-dark" href="/dashboard/puntos?id=<%= id %>" role="button"><ion-icon
                                 name="checkbox"></ion-icon></a>
@@ -114,9 +121,26 @@
                                 name="people"></ion-icon></a>
                         <span style="margin-left: 2px;">Sistema de rangos</span>
                         <br><br>
-                        <a class="btn btn-dark" href="/dashboard/game1?id=<%= id %>" role="button"><ion-icon
+                        <% if(cuest == 5) {%>
+                            <span style="color: rgb(255, 255, 255); background-color: rgb(196, 3, 3); border-radius: 16px; font-size: 1em; padding: 4px;">3</span>
+                            <a class="btn btn-dark" href="/dashboard/game1?id=<%= id %>" role="button"><ion-icon
                                 name="logo-game-controller-b"></ion-icon></a>
-                        <span style="margin-left: 2px;">Minijuegos</span>
+                            <span style="margin-left: 2px;">Minijuegos</span>
+                        <%} else if(cuest == 4) {%>
+                            <span style="color: rgb(255, 255, 255); background-color: rgb(196, 3, 3); border-radius: 16px; font-size: 1em; padding: 4px;">2</span>
+                            <a class="btn btn-dark" href="/dashboard/game1?id=<%= id %>" role="button"><ion-icon
+                                name="logo-game-controller-b"></ion-icon></a>
+                            <span style="margin-left: 2px;">Minijuegos</span>
+                        <% } else if(cuest == 3){ %>
+                            <span style="color: rgb(255, 255, 255); background-color: rgb(196, 3, 3); border-radius: 16px; font-size: 1em; padding: 4px;">1</span>
+                            <a class="btn btn-dark" href="/dashboard/game1?id=<%= id %>" role="button"><ion-icon
+                                name="logo-game-controller-b"></ion-icon></a>
+                            <span style="margin-left: 2px;">Minijuegos</span>
+                        <% } else if(cuest == 2 || cuest == 1) {%>
+                            <a class="btn btn-dark" href="/dashboard/game1?id=<%= id %>" role="button"><ion-icon
+                                    name="logo-game-controller-b"></ion-icon></a>
+                            <span style="margin-left: 2px;">Minijuegos</span>
+                        <% } %>
                     </div>
                     <div class="alert alert-dark" role="alert">
                         <span><b>Aviso:</b> Se añadieron los primeros 2 rangos con su informacion y la opcion de
