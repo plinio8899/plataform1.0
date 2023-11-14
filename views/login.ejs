@@ -9,6 +9,30 @@
     integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
     crossorigin="anonymous"
   />
+  <style>
+            /* Define la animación */
+            @keyframes fadeIn {
+            from {
+                opacity: 0;
+                /* Elemento invisible al principio */
+                transform: translateY(-100px);
+                /* Puede ajustarse según la dirección deseada */
+            }
+
+            to {
+                opacity: 1;
+                /* Elemento completamente visible al final */
+                transform: translateY(0);
+                /* Sin transformación al final */
+            }
+        }
+
+        /* Aplica la animación al elemento */
+        .fade {
+            animation: fadeIn 0.3s ease-out forwards;
+            /* Nombre de la animación, duración, y función de temporización */
+        }
+  </style>
     <title>Inicia sesion</title>
 </head>
 <body>
@@ -16,7 +40,7 @@
         <h1>ha ocurrido un error con la sessión</h1>
         <a href="/auth">Volver a iniciar sesion</a>
     <% } else{%>
-        <div class="container">
+        <div class="container fade">
             <br>
             <a href="/"><ion-icon name="arrow-round-back" class="btn-dark" size="large"></ion-icon></a>
             <center>

@@ -14,6 +14,29 @@
         display: flex !important;
         align-items: center;
     }
+
+    
+    @keyframes fadeIn {
+            from {
+                opacity: 0;
+                /* Elemento invisible al principio */
+                transform: translateX(100px);
+                /* Puede ajustarse según la dirección deseada */
+            }
+
+            to {
+                opacity: 1;
+                /* Elemento completamente visible al final */
+                transform: translateX(0);
+                /* Sin transformación al final */
+            }
+        }
+
+        /* Aplica la animación al elemento */
+        .fade {
+            animation: fadeIn 0.3s ease-out forwards;
+            /* Nombre de la animación, duración, y función de temporización */
+        }
   </style>
     <title>Bienvenido</title>
 </head>
@@ -23,7 +46,7 @@
         <a href="/auth">Volver a iniciar sesion</a>
     <% } else{ %>
         <% if(cuest == 1){ %>
-            <div class="container">
+            <div class="container fade">
                 <br>
                 <div class="bac">
                     <a href="/dashboard?id=<%= id %>"><ion-icon name="arrow-round-back" class="btn-dark" size="large"></ion-icon></a>
@@ -57,7 +80,7 @@
                 </div>
             </div>
         <% } else {%>
-            <div class="container">
+            <div class="container fade">
                 <br>
                 <div class="bac">
                     <a href="/dashboard?id=<%= id %>"><ion-icon name="arrow-round-back" class="btn-dark" size="large"></ion-icon></a>

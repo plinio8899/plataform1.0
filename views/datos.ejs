@@ -14,12 +14,35 @@
         display: flex !important;
         align-items: center;
     }
+            /* Define la animación */
+            @keyframes fadeIn {
+            from {
+                opacity: 0;
+                /* Elemento invisible al principio */
+                transform: translateX(100px);
+                /* Puede ajustarse según la dirección deseada */
+            }
+
+            to {
+                opacity: 1;
+                /* Elemento completamente visible al final */
+                transform: translateX(0);
+                /* Sin transformación al final */
+            }
+        }
+
+
+        /* Aplica la animación al elemento */
+        .fade {
+            animation: fadeIn 0.3s ease-out forwards;
+            /* Nombre de la animación, duración, y función de temporización */
+        }
   </style>
     <title>Bienvenido</title>
 </head>
 <body>
     <% if(id){ %>
-        <div class="container">
+        <div class="container fade">
             <br>
             <div class="bac">
                 <a href="/dashboard?id=<%= id %>"><ion-icon name="arrow-round-back" class="btn-dark" size="large"></ion-icon></a>
@@ -27,7 +50,7 @@
             <br>
             <center>
                 <h1 class="display-4">Perfil</h1>
-                <hr>
+                <hr class="fader">
             </center>
             <br><br>
             <div class="alert alert-dark" role="alert">
