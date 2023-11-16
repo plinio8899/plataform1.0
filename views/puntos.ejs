@@ -99,6 +99,34 @@
                         <h4>Puntos semanales</h4>
                     </center>
                 </div>
+                <br>
+                <% if(rol == "Capitán") {%>
+                    <div class="alert alert-dark" role="alert">
+                        <center>
+                            <h6><b>Tabla de Pocisiones</b></h6>
+                        </center>
+                    </div>
+                    <div class="alert alert-dark" role="alert">
+                        <table class="table table-striped">
+                            <thead>
+                              <tr>
+                                <th scope="col">Usuario</th>
+                                <th scope="col">Puntos semanales</th>
+                                <th scope="col">Puntos totales</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <% getUsers.forEach((user, index) => { %>
+                                <tr>
+                                  <td><%= user.name %></td>
+                                  <td><%= user.points %></td>
+                                  <td><%= user.totalPoints %></td>
+                                </tr>
+                              <% }); %>
+                            </tbody>
+                          </table>
+                    </div>
+                <% } %>
             </div>
         <% } %>
     <% } %>

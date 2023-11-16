@@ -168,18 +168,41 @@ router.post('/tareas/cuestionario', async (req, res) => {
 router.get('/puntos', async (req, res) => {
     try {
         const id = parseInt(req.query.id)
+        let sexoU = ""
     
         const getUser = await db.users.findFirst({
             where: {
                 id: id
             }
         })
+
+        if(getUser.sexo == "man"){
+            sexoU = "man"
+        }else {
+            sexoU = "woman"
+        }
+
+        const getUsers = await db.users.findMany({
+            select: {
+                name: true,
+                points: true,
+                totalPoints: true
+            },
+            where: {
+                id: {
+                    notIn: [1, 2, 3 ,4]
+                },
+                sexo: sexoU
+            },
+            orderBy: {
+                totalPoints: 'desc'
+            }
+        })
     
         const totalPoints = getUser.totalPoints
         const currentPoints = getUser.points
         const rol = getUser.rol
-    
-        res.render('puntos', {id, totalPoints, currentPoints, rol})
+        res.render('puntos', {id, totalPoints, currentPoints, rol, getUsers})
     } catch (error) {
         res.send(error.message)
     }
