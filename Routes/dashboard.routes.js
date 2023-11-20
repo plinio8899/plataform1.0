@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { PrismaClient } from "@prisma/client"
-
+import { verifyRange } from "../Middlewares/range.middleware.js";
 const db = new PrismaClient();
 const router = Router();
 
-router.get('/', async (req, res) => {
+router.get('/', verifyRange, async (req, res) => {
     try {
         const id = parseInt(req.query.id)
         const passBd = await db.users.findFirst({
@@ -24,7 +24,7 @@ router.get('/', async (req, res) => {
     }
 })
 
-router.get('/datos', async (req, res) => {
+router.get('/datos', verifyRange, async (req, res) => {
     try {
         const id = parseInt(req.query.id)
         const passBd = await db.users.findFirst({
