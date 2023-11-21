@@ -73,10 +73,17 @@
                 <span style="margin-left: 2px;"><b>Rango:</b> <%= rango %></span>
             </div>
             <div class="alert alert-dark" role="alert">
-                <label><b>Codigo:</b></label>
-                <input type="number" class="form-control">
-                <br>
-                <button type="submit" class="btn btn-dark">Enviar</button>
+                <form action="/dashboard/datos?id=<%= id %>&usuario=<%= usuario %>&phone=<%= phone %>&rango=<%= rango %>" method="POST">
+                    <label><b>Codigo:</b></label>
+                    <input type="number" class="form-control" name="code" id="code">
+                    <% if(msg == "codigoincorrecto") { %>
+                        <div class="alert alert-danger" role="alert">
+                            <strong class="text-black-50">El codigo no existe o ya fue utilizado</strong>
+                        </div>
+                    <% } %>
+                    <br>
+                    <button type="submit" class="btn btn-dark">Enviar</button>
+                </form>
             </div>
         </div>
     <% } else {%>

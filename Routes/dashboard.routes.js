@@ -37,7 +37,8 @@ router.get('/datos', verifyRange, async (req, res) => {
         const sexo = passBd.sexo
         const rango = passBd.rango
         const cuest = passBd.cuesStatus
-        res.render('datos', {id, usuario, phone, sexo, rango, cuest})
+        let msg = req.query.msg
+        res.render('datos', {id, usuario, phone, sexo, rango, cuest, msg})
     } catch (error) {
         res.send(error.message)
     }
@@ -83,7 +84,8 @@ router.get('/tareas/cuestionario/revision', async (req, res) => {
     try {
         const rev = req.query.points
         const id = req.query.id
-        res.render('resultado', {id, rev})
+        let msg = req.query.msg
+        res.render('resultado', {id, rev, msg})
     } catch (error) {
         res.send("Error: " + error.message)
     }
@@ -416,5 +418,66 @@ router.get('/gamepoints', async(req, res) => {
     } catch (error) {
         res.send(error.message)
     }
+
 })
-export default router;
+
+
+router.post('/datos', async(req, res) => {
+    try {
+        const id = parseInt(req.query.id)
+        const code = parseInt(req.body.code)
+        let plusPoints = 0
+        console.log(code.toString().length)
+
+        const coder = await db.codes.findFirst({
+            where: {
+                code: code,
+            }
+        })
+
+        if(coder){
+            if(parseInt(coder.code) == code) {
+                const user = await db.users.findFirst({
+                    where: {
+                        id: id,
+                    }
+                })
+                if(code.toString().length == 10){
+                    plusPoints = 60
+                }
+                if(code.toString().length == 9){
+                    plusPoints = 50
+                }
+                if(code.toString().length == 8){
+                    plusPoints = 40
+                }
+                if(code.toString().length == 7){
+                    plusPoints = 30
+                }
+                await db.users.update({
+                    where: {
+                        id: id
+                    },
+                    data: {
+                      points: parseInt(user.points) + plusPoints  
+                    }
+                })
+                await db.codes.delete({
+                    where: {
+                        code: code
+                    }
+                })
+                res.redirect(`/dashboard/tareas/cuestionario/revision?id=${id}&points=${plusPoints}&msg=hola`)
+            }else if(code == 0){
+                res.redirect(`/dashboard/datos?id=${id}&msg=codigoincorrecto`)
+            }else{
+                res.redirect(`/dashboard/datos?id=${id}&msg=codigoincorrecto`) 
+            }
+        }else{
+            res.redirect(`/dashboard/datos?id=${id}&msg=codigoincorrecto`) 
+        }
+    } catch ({error}) {
+        res.send(error)
+    }
+})
+export default router; 

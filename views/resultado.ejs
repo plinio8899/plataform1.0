@@ -16,13 +16,23 @@
     
     <div class="container">
         <br><br>
-        <div class="alert alert-dark" role="alert">
-            <center>
-            <h1 class="display-4">has ganado <%= rev %> puntos</h1>
-            <br>
-                <a name="" id="" class="btn btn-dark" href="/dashboard/tareas?id=<%= id %>" role="button">Regresar</a>
-            </center>
-        </div>
+        <% if(msg == 'no') {%>
+            <div class="alert alert-dark" role="alert">
+                <center>
+                <h1 class="display-4">has ganado <%= rev %> puntos</h1>
+                <br>
+                    <a name="" id="" class="btn btn-dark" href="/dashboard/tareas?id=<%= id %>" role="button">Regresar</a>
+                </center>
+            </div>
+        <% } else if(msg == 'hola'){ %>
+            <div class="alert alert-dark" role="alert">
+                <center>
+                <h1 class="display-4">has ganado <%= rev %> puntos</h1>
+                <br>
+                    <a name="" id="" class="btn btn-dark" href="/dashboard?id=<%= id %>" role="button">Regresar</a>
+                </center>
+            </div>
+        <% } %>
     </div>
 
     <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
