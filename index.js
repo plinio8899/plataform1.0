@@ -22,6 +22,14 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }))
 
+app.use((req, res, next) => {
+    if (req.headers['x-forwarded-proto'] !== 'https') {
+      // Redirige a la versión segura (HTTPS) de la URL
+      return res.redirect('https://' + req.get('host') + req.url);
+    }
+    next();
+  });
+
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
 
