@@ -9,7 +9,6 @@ import userRoute from "./Routes/users.routes.js"
 import authRoute from "./Routes/auth.routes.js"
 import dashRoute from "./Routes/dashboard.routes.js"
 import { PrismaClient } from "@prisma/client"
-import helmet from "helmet";
 
 const db = new PrismaClient();
 
@@ -22,25 +21,6 @@ const __dirname = dirname(__filename);
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }))
-
-app.use((req, res, next) => {
-    if (req.headers['x-forwarded-proto'] !== 'https') {
-      // Redirige a la versión segura (HTTPS) de la URL
-      return res.redirect('https://' + req.get('host') + req.url);
-    }
-    next();
-  });
-
-  app.use(helmet());
-
-  app.use((req, res, next) => {
-    if (req.header('x-forwarded-proto') !== 'https') {
-      res.redirect(`https://${req.header('host')}${req.url}`);
-    } else {
-      next();
-    }
-  });
-  
 
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views')
