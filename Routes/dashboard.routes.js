@@ -160,7 +160,7 @@ router.post('/tareas/cuestionario', async (req, res) => {
                 totalPoints: totalPointsresult
             }
         })
-        res.redirect(`/dashboard/tareas/cuestionario/revision?id=${id}&points=${points}`)
+        res.redirect(`/dashboard/tareas/cuestionario/revision?id=${id}&points=${points}&msg=no`)
     } catch (error) {
         res.send("Hola" + error.message)
     }
