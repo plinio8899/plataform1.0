@@ -459,7 +459,8 @@ router.post('/datos', async(req, res) => {
                         id: id
                     },
                     data: {
-                      points: parseInt(user.points) + plusPoints  
+                      points: parseInt(user.points) + plusPoints,
+                      totalPoints: parseInt(user.totalPoints) + plusPoints	
                     }
                 })
                 await db.codes.delete({
@@ -480,4 +481,14 @@ router.post('/datos', async(req, res) => {
         res.send(error)
     }
 })
+
+router.get('/feed', (req, res) => {
+    try {
+        const id = parseInt(req.query.id)
+        res.render('feed', {id})
+    } catch (error) {
+        res.send(error)
+    }
+})
+
 export default router; 
