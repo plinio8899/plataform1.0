@@ -13,7 +13,7 @@
     "node": "18.17.1"
   },
   "keywords": [],
-  "author": "Neon black",
+  "author": "Neon Black",
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^5.4.2",
