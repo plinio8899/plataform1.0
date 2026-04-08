@@ -1,8 +1,6 @@
 import { Router } from "express";
 import { comparePass } from "../Utils/handlePassword.js";
-import { PrismaClient } from "@prisma/client"
-
-const db = new PrismaClient();
+import { db } from "../db/index.js"
 
 const router = Router();
 

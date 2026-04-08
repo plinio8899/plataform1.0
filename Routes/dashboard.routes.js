@@ -1,7 +1,6 @@
 import { Router } from "express";
-import { PrismaClient } from "@prisma/client"
+import { db } from "../db/index.js"
 import { verifyRange } from "../Middlewares/range.middleware.js";
-const db = new PrismaClient();
 const router = Router();
 
 router.get('/', verifyRange, async (req, res) => {
@@ -256,6 +255,7 @@ router.post('/puntos', async (req, res) => {
         console.log("Hombres: " + hPoints + " Mujeres: " + mPoints)
         res.redirect(`/dashboard/puntos?id=${id}`)
     } catch (error) {
+        console.log(error)
         res.send(error.message)
     }
 })
@@ -334,7 +334,8 @@ router.post('/ocult/puntos', async(req, res) => {
                 },
 
                 data: {
-                    man: tPoints
+                    man: tPoints,
+                    woman: mPoints
                 }
             })
         }else if(sexo == "woman"){
@@ -345,6 +346,7 @@ router.post('/ocult/puntos', async(req, res) => {
                 },
 
                 data: {
+                    man: hPoints,
                     woman: tPoints
                 }
             })
@@ -385,6 +387,30 @@ router.get('/game1', async (req, res) => {
         })
         const cuest = passB.cuesStatus
         res.render('game1', {id, cuest})
+    } catch (error) {
+        res.send(error.message)
+    }
+})
+
+// Nueva ruta para seleccionar juego
+router.get('/game/:gameId', async (req, res) => {
+    try {
+        const id = parseInt(req.query.id)
+        const gameId = parseInt(req.params.gameId)
+        const passB = await db.users.findFirst({
+            where: {
+                id: id
+            }
+        })
+        const cuest = passB.cuesStatus
+        
+        if (gameId === 1) {
+            res.render('game-tower', {id, cuest})
+        } else if (gameId === 2) {
+            res.render('game-flappy', {id, cuest})
+        } else {
+            res.redirect('/dashboard/game1?id=' + id)
+        }
     } catch (error) {
         res.send(error.message)
     }

@@ -1,7 +1,5 @@
-import { PrismaClient } from "@prisma/client"
+import { db } from "../db/index.js"
 import { hashingPass } from "../Utils/handlePassword.js";
-
-const db = new PrismaClient();
 
 export const getUser = () => {
     let ret = "Plinio Acuña"

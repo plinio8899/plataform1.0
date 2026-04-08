@@ -1,5 +1,4 @@
 import express from "express";
-//Arreglando lo de la ubicacion de ejs
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -8,9 +7,7 @@ import cors from "cors";
 import userRoute from "./Routes/users.routes.js"
 import authRoute from "./Routes/auth.routes.js"
 import dashRoute from "./Routes/dashboard.routes.js"
-import { PrismaClient } from "@prisma/client"
-
-const db = new PrismaClient();
+import { db } from "./db/index.js"
 
 const port = process.env.PORT || 3000;
 

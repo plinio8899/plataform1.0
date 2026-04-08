@@ -104,3 +104,150 @@ html, body {
 #container.ended .game-over p {
   transition-delay: 0.3s;
 }
+
+/* ============ FLAPPY BIRD STYLES ============ */
+
+#container-flappy {
+  width: 100%;
+  height: 100%;
+}
+#container-flappy #score-flappy {
+  position: absolute;
+  top: 20px;
+  width: 100%;
+  text-align: center;
+  font-size: 10vh;
+  transition: transform 0.5s ease;
+  color: #fff;
+  text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+  transform: translatey(-200px) scale(1);
+  z-index: 100;
+}
+#container-flappy #game-flappy {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+#container-flappy .game-over-flappy {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 85%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.5);
+  border-radius: 20px;
+  opacity: 0;
+  transform: translatey(-50px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  pointer-events: none;
+}
+#container-flappy .game-over-flappy * {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  opacity: 0;
+  transform: translatey(-50px);
+  color: #fff;
+}
+#container-flappy .game-over-flappy h2 {
+  color: #fff;
+  font-size: 60px;
+  margin: 0;
+  padding: 0;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+#container-flappy .game-over-flappy p {
+  color: #fff;
+  font-size: 30px;
+  margin-bottom: 30px;
+}
+#container-flappy .game-over-flappy a,
+#container-flappy .game-over-flappy button {
+  transition: all 0.3s ease;
+  padding: 15px 30px;
+  font-size: 20px;
+  margin: 5px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+#container-flappy .game-ready-flappy {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}
+#container-flappy .game-ready-flappy #start-button-flappy {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  opacity: 0;
+  transform: translatey(-50px);
+  border: 3px solid #fff;
+  padding: 10px 20px;
+  background-color: transparent;
+  color: #fff;
+  font-size: 30px;
+  border-radius: 10px;
+}
+#container-flappy #instructions-flappy {
+  position: absolute;
+  width: 100%;
+  top: 25vh;
+  left: 0;
+  text-align: center;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  opacity: 0;
+  color: #fff;
+  font-size: 24px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+#container-flappy.playing #score-flappy {
+  transform: translatey(0px) scale(1);
+}
+#container-flappy.playing #instructions-flappy {
+  opacity: 0;
+}
+#container-flappy.ready .game-ready-flappy #start-button-flappy {
+  opacity: 1;
+  transform: translatey(0);
+}
+#container-flappy.ended .game-over-flappy {
+  opacity: 1 !important;
+  transform: translatey(0) !important;
+  pointer-events: auto;
+  z-index: 1000 !important;
+}
+#container-flappy.ended .game-over-flappy * {
+  opacity: 1 !important;
+  transform: translatey(0) !important;
+}
+#container-flappy.ended .game-ready-flappy {
+  display: none;
+}
+
+/* Game Over buttons container */
+.game-over-buttons {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.game-over-buttons a {
+  padding: 15px 30px;
+  font-size: 18px;
+  border-radius: 10px;
+  text-decoration: none;
+}
+.game-over-buttons a:hover {
+  transform: scale(1.05);
+}
