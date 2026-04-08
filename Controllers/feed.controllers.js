@@ -1,5 +1,5 @@
 import { db } from "../db/index.js";
-import { getAllPosts, createPost, toggleReaction, createComment } from "../Services/feed.services.js";
+import { getAllPosts, createPost, toggleReaction, createComment, updatePost, deletePost } from "../Services/feed.services.js";
 
 export const getFeed = async (req, res) => {
     try {
@@ -76,6 +76,37 @@ export const postComment = async (req, res) => {
         }
         
         await createComment(postId, id, comment.trim());
+        
+        res.redirect(`/feed?id=${id}`);
+    } catch (error) {
+        res.send(error.message);
+    }
+}
+
+export const updateFeed = async (req, res) => {
+    try {
+        const id = parseInt(req.query.id);
+        const postId = parseInt(req.query.postId);
+        const { description } = req.body;
+        
+        if (!description || description.trim() === "") {
+            return res.redirect(`/feed?id=${id}&error=empty`);
+        }
+        
+        await updatePost(postId, id, description.trim());
+        
+        res.redirect(`/feed?id=${id}`);
+    } catch (error) {
+        res.send(error.message);
+    }
+}
+
+export const deleteFeed = async (req, res) => {
+    try {
+        const id = parseInt(req.query.id);
+        const postId = parseInt(req.query.postId);
+        
+        await deletePost(postId, id);
         
         res.redirect(`/feed?id=${id}`);
     } catch (error) {

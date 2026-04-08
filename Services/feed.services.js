@@ -1,4 +1,5 @@
 import { db } from "../db/index.js"
+import { eventEmitter } from "../Utils/events.js"
 
 export const getAllPosts = async () => {
     try {
@@ -55,6 +56,17 @@ export const createPost = async (authorId, description) => {
                 description: description
             }
         })
+        
+        // Broadcast new post to all connected clients
+        const postWithDetails = await db.feed.findUnique({
+            where: { id: newPost.id },
+            include: {
+                author: { select: { name: true, rango: true } },
+                _count: { select: { reactions: true, comments: true } }
+            }
+        });
+        eventEmitter.sendFeedUpdate('created', postWithDetails);
+        
         return newPost
     } catch (error) {
         throw new Error("Error al crear el post: " + error.message)
@@ -84,6 +96,7 @@ export const toggleReaction = async (postId, userId, type = 'like') => {
                     }
                 }
             })
+            eventEmitter.sendFeedUpdate('reaction', { postId, userId, action: 'removed' });
             return { action: 'removed' }
         } else {
             // Add reaction
@@ -94,6 +107,7 @@ export const toggleReaction = async (postId, userId, type = 'like') => {
                     type: type
                 }
             })
+            eventEmitter.sendFeedUpdate('reaction', { postId, userId, action: 'added' });
             return { action: 'added' }
         }
     } catch (error) {
@@ -113,5 +127,66 @@ export const createComment = async (postId, userId, content) => {
         return newComment
     } catch (error) {
         throw new Error("Error al crear comentario: " + error.message)
+    }
+}
+
+export const updatePost = async (postId, authorId, newDescription) => {
+    try {
+        // Verificar que el post existe
+        const post = await db.feed.findUnique({
+            where: { id: postId }
+        })
+        
+        if (!post) {
+            throw new Error("Publicación no encontrada")
+        }
+        
+        // Verificar que el usuario es el autor
+        if (post.authorId !== authorId) {
+            throw new Error("No tienes permiso para editar esta publicación")
+        }
+        
+        // Actualizar el post
+        const updatedPost = await db.feed.update({
+            where: { id: postId },
+            data: { description: newDescription }
+        })
+        
+        // Broadcast update to all clients
+        eventEmitter.sendFeedUpdate('updated', { postId, description: newDescription });
+        
+        return updatedPost
+    } catch (error) {
+        throw new Error(error.message)
+    }
+}
+
+export const deletePost = async (postId, authorId) => {
+    try {
+        // Verificar que el post existe
+        const post = await db.feed.findUnique({
+            where: { id: postId }
+        })
+        
+        if (!post) {
+            throw new Error("Publicación no encontrada")
+        }
+        
+        // Verificar que el usuario es el autor
+        if (post.authorId !== authorId) {
+            throw new Error("No tienes permiso para eliminar esta publicación")
+        }
+        
+        // Eliminar el post (las reacciones y comentarios se eliminan en cascada)
+        await db.feed.delete({
+            where: { id: postId }
+        })
+        
+        // Broadcast deletion to all clients
+        eventEmitter.sendFeedUpdate('deleted', { postId });
+        
+        return { success: true, message: "Publicación eliminada" }
+    } catch (error) {
+        throw new Error(error.message)
     }
 }

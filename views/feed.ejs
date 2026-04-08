@@ -125,6 +125,84 @@
         .toggle-comments:hover {
             color: #343a40;
         }
+
+        .post-actions {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .post-card:hover .post-actions {
+            opacity: 1;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px 8px;
+            border-radius: 5px;
+            transition: all 0.2s ease;
+            color: #6c757d;
+        }
+
+        .action-btn:hover {
+            background-color: rgba(0,0,0,0.1);
+        }
+
+        .action-btn.edit-btn:hover {
+            color: #007bff;
+            background-color: rgba(0,123,255,0.1);
+        }
+
+        .action-btn.delete-btn:hover {
+            color: #dc3545;
+            background-color: rgba(220,53,69,0.1);
+        }
+
+        .edit-form {
+            display: none;
+        }
+
+        .edit-form.active {
+            display: block;
+        }
+
+        .original-text {
+            display: block;
+        }
+
+        .original-text.hidden {
+            display: none;
+        }
+
+        .edit-textarea {
+            width: 100%;
+            border: 2px solid #343a40;
+            border-radius: 8px;
+            padding: 10px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .edit-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-cancel {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-cancel:hover {
+            background-color: #5a6268;
+        }
     </style>
     <title>Feed - Estados</title>
 </head>
@@ -170,6 +248,7 @@
         </div>
 
         <!-- Lista de posts -->
+        <div class="posts-container">
         <% if (posts && posts.length > 0) { %>
             <% posts.forEach(function(post, index) { %>
                 <% 
@@ -178,7 +257,7 @@
                     const reactionCount = post._count.reactions;
                     const commentCount = post._count.comments;
                 %>
-                <div class="card post-card" style="opacity: 0;">
+                <div class="card post-card" data-post-id="<%= post.id %>" style="opacity: 0;">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-start">
                             <div>
@@ -190,14 +269,43 @@
                                 </span>
                                 <% if (post.author && post.author.rango) { %>
                                     <span class="badge badge-secondary autor-badge">
-                                        <%= post.author.rango %>
+                                        <%- post.author.rango %>
                                     </span>
                                 <% } %>
                             </div>
-                            <small class="text-muted"><%= new Date(post.createdAt).toLocaleDateString() %></small>
+                            <div class="d-flex align-items-center gap-2">
+                                <% if (post.authorId === id) { %>
+                                    <div class="post-actions d-flex gap-1">
+                                        <button type="button" class="action-btn edit-btn" onclick="enableEdit(<%= post.id %>)" title="Editar">
+                                            <span class="material-symbols-outlined" style="font-size: 1.2rem;">edit</span>
+                                        </button>
+                                        <form action="/feed/delete?id=<%= id %>&postId=<%= post.id %>" method="POST" style="display: inline;">
+                                            <button type="submit" class="action-btn delete-btn" onclick="return confirm('¿Eliminar esta publicación?')" title="Eliminar">
+                                                <span class="material-symbols-outlined" style="font-size: 1.2rem;">delete</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                <% } %>
+                                <small class="text-muted"><%= new Date(post.createdAt).toLocaleDateString() %></small>
+                            </div>
                         </div>
                         <hr>
-                        <p class="card-text mt-2" style="white-space: pre-wrap;"><%= post.description %></p>
+                        <p class="card-text mt-2 original-text" id="text-<%= post.id %>" style="white-space: pre-wrap;"><%= post.description %></p>
+                        
+                        <!-- Edit Form (Hidden by default) -->
+                        <form action="/feed/update?id=<%= id %>&postId=<%= post.id %>" method="POST" class="edit-form" id="edit-form-<%= post.id %>">
+                            <textarea name="description" class="edit-textarea" id="edit-textarea-<%= post.id %>"><%= post.description %></textarea>
+                            <div class="edit-actions">
+                                <button type="submit" class="btn btn-dark btn-sm">
+                                    <span class="material-symbols-outlined" style="font-size: 1rem; vertical-align: middle;">check</span>
+                                    Guardar
+                                </button>
+                                <button type="button" class="btn-cancel" onclick="cancelEdit(<%= post.id %>)">
+                                    <span class="material-symbols-outlined" style="font-size: 1rem; vertical-align: middle;">close</span>
+                                    Cancelar
+                                </button>
+                            </div>
+                        </form>
                         
                         <!-- Reactions and Comments Section -->
                         <div class="d-flex align-items-center justify-content-between mt-3">
@@ -270,6 +378,179 @@
     </div>
 
     <script>
+        // SSE connection for real-time updates
+        let eventSource;
+        const currentUserId = <%= id %>;
+        
+        function connectSSE() {
+            eventSource = new EventSource('/events');
+            
+            eventSource.addEventListener('feed', (e) => {
+                const data = JSON.parse(e.data);
+                handleFeedUpdate(data);
+            });
+            
+            eventSource.addEventListener('connected', (e) => {
+                console.log('Connected to real-time updates');
+            });
+            
+            eventSource.onerror = () => {
+                console.log('SSE connection lost, reconnecting...');
+                setTimeout(connectSSE, 5000);
+            };
+        }
+        
+        function handleFeedUpdate(data) {
+            const { action, post } = data;
+            
+            switch(action) {
+                case 'created':
+                    addNewPost(post);
+                    break;
+                case 'deleted':
+                    removePost(post.postId);
+                    break;
+                case 'reaction':
+                    updateReaction(post.postId, post.userId, post.action);
+                    break;
+                case 'updated':
+                    updatePostText(post.postId, post.description);
+                    break;
+            }
+        }
+        
+        function addNewPost(post) {
+            const postsContainer = document.querySelector('.posts-container');
+            if (!postsContainer) return;
+            
+            const postHtml = createPostHTML(post);
+            postsContainer.insertAdjacentHTML('afterbegin', postHtml);
+            animateNewPost();
+        }
+        
+        function createPostHTML(post) {
+            const isOwner = post.authorId === currentUserId;
+            return `
+                <div class="card post-card" data-post-id="${post.id}" style="opacity: 0; animation: fadeIn 0.4s ease-out forwards;">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <span class="badge badge-dark autor-badge">
+                                    <span class="material-symbols-outlined" style="font-size: 1rem; vertical-align: middle;">person</span>
+                                    ${post.author ? post.author.name : 'Usuario'}
+                                </span>
+                                ${post.author && post.author.rango ? `<span class="badge badge-secondary autor-badge">${post.author.rango}</span>` : ''}
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                ${isOwner ? `
+                                    <div class="post-actions d-flex gap-1">
+                                        <button type="button" class="action-btn edit-btn" onclick="enableEdit(${post.id})" title="Editar">
+                                            <span class="material-symbols-outlined" style="font-size: 1.2rem;">edit</span>
+                                        </button>
+                                        <form action="/feed/delete?id=${currentUserId}&postId=${post.id}" method="POST" style="display: inline;">
+                                            <button type="submit" class="action-btn delete-btn" onclick="return confirm('¿Eliminar esta publicación?')" title="Eliminar">
+                                                <span class="material-symbols-outlined" style="font-size: 1.2rem;">delete</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                ` : ''}
+                                <small class="text-muted">${new Date(post.createdAt).toLocaleDateString()}</small>
+                            </div>
+                        </div>
+                        <hr>
+                        <p class="card-text mt-2 original-text" id="text-${post.id}" style="white-space: pre-wrap;">${post.description}</p>
+                        <form action="/feed/update?id=${currentUserId}&postId=${post.id}" method="POST" class="edit-form" id="edit-form-${post.id}">
+                            <textarea name="description" class="edit-textarea" id="edit-textarea-${post.id}">${post.description}</textarea>
+                            <div class="edit-actions">
+                                <button type="submit" class="btn btn-dark btn-sm">
+                                    <span class="material-symbols-outlined" style="font-size: 1rem; vertical-align: middle;">check</span> Guardar
+                                </button>
+                                <button type="button" class="btn-cancel" onclick="cancelEdit(${post.id})">
+                                    <span class="material-symbols-outlined" style="font-size: 1rem; vertical-align: middle;">close</span> Cancelar
+                                </button>
+                            </div>
+                        </form>
+                        <div class="d-flex align-items-center justify-content-between mt-3">
+                            <div class="d-flex align-items-center">
+                                <form action="/feed/reaction?id=${currentUserId}&postId=${post.id}" method="POST" style="display: inline;">
+                                    <button type="submit" class="reaction-btn">
+                                        <span class="material-symbols-outlined heart-icon" style="font-size: 1.3rem;">favorite</span>
+                                        <span>${post._count ? post._count.reactions : 0}</span>
+                                    </button>
+                                </form>
+                                <button type="button" class="reaction-btn toggle-comments" onclick="toggleComments(${post.id})">
+                                    <span class="material-symbols-outlined" style="font-size: 1.3rem;">chat_bubble</span>
+                                    <span>${post._count ? post._count.comments : 0}</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="comments-${post.id}" class="comment-section" style="display: none;">
+                            <p class="text-muted" style="font-size: 0.85rem;">No hay comentarios todavía.</p>
+                            <form action="/feed/comment?id=${currentUserId}&postId=${post.id}" method="POST" class="comment-form">
+                                <input type="text" name="comment" class="comment-input" placeholder="Escribe un comentario..." required>
+                                <button type="submit" class="btn btn-dark btn-sm">
+                                    <span class="material-symbols-outlined" style="font-size: 1rem;">send</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function removePost(postId) {
+            const postElement = document.querySelector(`.post-card[data-post-id="${postId}"]`);
+            if (postElement) {
+                postElement.style.animation = 'fadeOut 0.3s ease-out forwards';
+                setTimeout(() => postElement.remove(), 300);
+            }
+        }
+        
+        function updateReaction(postId, userId, action) {
+            const postElement = document.querySelector(`.post-card[data-post-id="${postId}"]`);
+            if (!postElement) return;
+            
+            const likeBtn = postElement.querySelector('.reaction-btn');
+            const likeCount = likeBtn.querySelector('span:last-child');
+            let count = parseInt(likeCount.textContent);
+            
+            if (action === 'added') {
+                likeBtn.classList.add('liked');
+                likeCount.textContent = count + 1;
+            } else {
+                likeBtn.classList.remove('liked');
+                likeCount.textContent = Math.max(0, count - 1);
+            }
+        }
+        
+        function updatePostText(postId, description) {
+            const textElement = document.getElementById('text-' + postId);
+            if (textElement) {
+                textElement.textContent = description;
+            }
+            cancelEdit(postId);
+        }
+        
+        function animateNewPost() {
+            const firstCard = document.querySelector('.post-card');
+            if (firstCard) {
+                firstCard.style.opacity = '1';
+            }
+        }
+        
+        // Add CSS for fadeOut animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeOut {
+                from { opacity: 1; transform: translateY(0); }
+                to { opacity: 0; transform: translateY(-20px); }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Initialize SSE connection
+        connectSSE();
+        
         function toggleComments(postId) {
             const section = document.getElementById('comments-' + postId);
             if (section.style.display === 'none') {
@@ -277,6 +558,25 @@
             } else {
                 section.style.display = 'none';
             }
+        }
+
+        function enableEdit(postId) {
+            const textElement = document.getElementById('text-' + postId);
+            textElement.classList.add('hidden');
+            
+            const formElement = document.getElementById('edit-form-' + postId);
+            formElement.classList.add('active');
+            
+            const textarea = document.getElementById('edit-textarea-' + postId);
+            textarea.focus();
+        }
+
+        function cancelEdit(postId) {
+            const textElement = document.getElementById('text-' + postId);
+            textElement.classList.remove('hidden');
+            
+            const formElement = document.getElementById('edit-form-' + postId);
+            formElement.classList.remove('active');
         }
     </script>
 </body>

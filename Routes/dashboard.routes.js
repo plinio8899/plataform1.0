@@ -159,6 +159,7 @@ router.post('/tareas/cuestionario', async (req, res) => {
                 totalPoints: totalPointsresult
             }
         })
+        
         res.redirect(`/dashboard/tareas/cuestionario/revision?id=${id}&points=${points}&msg=no`)
     } catch (error) {
         res.send("Hola" + error.message)
@@ -440,6 +441,7 @@ router.get('/gamepoints', async(req, res) => {
                 cuesStatus: cuest -1
             }
         })
+        
         res.redirect(`/dashboard/game1?id=${id}`)
     } catch (error) {
         res.send(error.message)

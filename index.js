@@ -9,6 +9,7 @@ import authRoute from "./Routes/auth.routes.js"
 import dashRoute from "./Routes/dashboard.routes.js"
 import feedRoute from "./Routes/feed.routes.js"
 import { db } from "./db/index.js"
+import { eventEmitter } from "./Utils/events.js"
 
 const port = process.env.PORT || 3000;
 
@@ -54,7 +55,33 @@ app.get('/', async(req, res) => {
     }
 })
 
-
+// SSE endpoint for real-time updates
+app.get('/events', (req, res) => {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    
+    // Disable buffering
+    res.flushHeaders();
+    
+    // Add client to emitter
+    eventEmitter.addClient(res);
+    
+    // Send initial connection message
+    res.write(`event: connected\ndata: ${JSON.stringify({ message: 'Connected to real-time updates' })}\n\n`);
+    
+    // Keep connection alive with heartbeat
+    const heartbeat = setInterval(() => {
+        res.write(`: heartbeat\n\n`);
+    }, 30000);
+    
+    // Remove client on close
+    req.on('close', () => {
+        clearInterval(heartbeat);
+        eventEmitter.removeClient(res);
+    });
+});
 
 app.listen(port || 3000, () => {
     console.log("[+]listening on port: " + port)
