@@ -1,0 +1,84 @@
+import { db } from "../db/index.js";
+import { getAllPosts, createPost, toggleReaction, createComment } from "../Services/feed.services.js";
+
+export const getFeed = async (req, res) => {
+    try {
+        const id = parseInt(req.query.id);
+        
+        // Obtener datos del usuario para mantener la sesión
+        const passBd = await db.users.findFirst({
+            where: { id: id }
+        });
+        
+        const usuario = passBd.name;
+        const phone = passBd.phone;
+        const sexo = passBd.sexo;
+        const rango = passBd.rango;
+        const cuest = passBd.cuesStatus;
+        const rol = passBd.rol;
+        
+        // Obtener todos los posts con reacciones y comentarios
+        const posts = await getAllPosts();
+        
+        res.render('feed', { 
+            id, 
+            usuario, 
+            phone, 
+            sexo, 
+            rango, 
+            cuest, 
+            rol,
+            posts 
+        });
+    } catch (error) {
+        res.send(error.message);
+    }
+}
+
+export const postFeed = async (req, res) => {
+    try {
+        const id = parseInt(req.query.id);
+        const { description } = req.body;
+        
+        if (!description || description.trim() === "") {
+            return res.redirect(`/feed?id=${id}&error=empty`);
+        }
+        
+        await createPost(id, description.trim());
+        
+        res.redirect(`/feed?id=${id}`);
+    } catch (error) {
+        res.send(error.message);
+    }
+}
+
+export const postReaction = async (req, res) => {
+    try {
+        const id = parseInt(req.query.id);
+        const postId = parseInt(req.query.postId);
+        
+        await toggleReaction(postId, id, 'like');
+        
+        res.redirect(`/feed?id=${id}`);
+    } catch (error) {
+        res.send(error.message);
+    }
+}
+
+export const postComment = async (req, res) => {
+    try {
+        const id = parseInt(req.query.id);
+        const postId = parseInt(req.query.postId);
+        const { comment } = req.body;
+        
+        if (!comment || comment.trim() === "") {
+            return res.redirect(`/feed?id=${id}`);
+        }
+        
+        await createComment(postId, id, comment.trim());
+        
+        res.redirect(`/feed?id=${id}`);
+    } catch (error) {
+        res.send(error.message);
+    }
+}

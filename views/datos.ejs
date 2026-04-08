@@ -13,6 +13,9 @@
   />
   <link rel="stylesheet" href="./css/light.css">
   <style>
+    *{
+        overflow: hidden;
+    }
     .bac{
         display: flex !important;
         align-items: center;
@@ -47,11 +50,11 @@
     <% if(id){ %>
         <div class="container fade">
             <br>
-            <div class="bac">
-                <a class="btn btn-dark" href="/dashboard?id=<%= id %>"><span class="material-symbols-outlined">
-                    arrow_back
-                    </span></a>
-            </div>
+                <div class="bac">
+                    <a class="btn btn-dark" href="/dashboard?id=<%= id %>"><span class="material-symbols-outlined">
+                        arrow_back
+                        </span></a>
+                </div>
             <br>
             <center>
                 <h1 class="display-4">Perfil</h1>

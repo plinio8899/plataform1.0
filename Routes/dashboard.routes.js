@@ -508,13 +508,4 @@ router.post('/datos', async(req, res) => {
     }
 })
 
-router.get('/feed', (req, res) => {
-    try {
-        const id = parseInt(req.query.id)
-        res.render('feed', {id})
-    } catch (error) {
-        res.send(error)
-    }
-})
-
-export default router; 
+export default router;

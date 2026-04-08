@@ -7,6 +7,7 @@ import cors from "cors";
 import userRoute from "./Routes/users.routes.js"
 import authRoute from "./Routes/auth.routes.js"
 import dashRoute from "./Routes/dashboard.routes.js"
+import feedRoute from "./Routes/feed.routes.js"
 import { db } from "./db/index.js"
 
 const port = process.env.PORT || 3000;
@@ -35,6 +36,7 @@ app.use(cors());
 app.use("/", userRoute);
 app.use("/auth", authRoute);
 app.use("/dashboard", dashRoute);
+app.use("/feed", feedRoute);
 app.use(express.json());
 
 app.get('/', async(req, res) => {

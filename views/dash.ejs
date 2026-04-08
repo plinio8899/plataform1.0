@@ -10,6 +10,9 @@
         integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous" />
         <link rel="stylesheet" href="./css/light.css">
     <style>
+        *{
+            overflow: hidden;
+        }
         .bac {
             display: flex !important;
             align-items: center;
@@ -136,6 +139,11 @@
                             groups_3
                             </span></a>
                         <span style="margin-left: 2px;">Sistema de rangos</span>
+                        <br><br>
+                        <a class="btn btn-dark" href="/feed?id=<%= id %>" role="button"><span class="material-symbols-outlined">
+                            feed
+                            </span></a>
+                        <span style="margin-left: 2px;">Estados</span>
                         <br><br>
                         <% if(cuest == 5) {%>
                             <span style="color: rgb(255, 255, 255); background-color: rgb(196, 3, 3); border-radius: 16px; font-size: 1em; padding: 4px;">3</span>

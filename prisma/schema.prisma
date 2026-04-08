@@ -21,6 +21,9 @@ model Users {
   rol String?
   totalPoints Int?
   sexo String
+  posts Feed[]
+  reactions Reaction[]
+  comments Comment[]
 }
 
 model Cuest {
@@ -47,10 +50,36 @@ model Sms {
 
 model Feed {
   id Int @id @default(autoincrement())
-  author Int
+  authorId Int
+  author Users @relation(fields: [authorId], references: [id])
   description String
+  createdAt DateTime @default(now())
+  reactions Reaction[]
+  comments Comment[]
+}
+
+model Reaction {
+  id Int @id @default(autoincrement())
+  postId Int
+  post Feed @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId Int
+  user Users @relation(fields: [userId], references: [id])
+  type String
+  createdAt DateTime @default(now())
+  
+  @@unique([postId, userId])
+}
+
+model Comment {
+  id Int @id @default(autoincrement())
+  postId Int
+  post Feed @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId Int
+  user Users @relation(fields: [userId], references: [id])
+  content String
+  createdAt DateTime @default(now())
 }
 
 model Codes {
   code Int @id
-} 
+}
