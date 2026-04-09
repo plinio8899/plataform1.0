@@ -46,6 +46,7 @@
         </center>
         <br><br>
         
+        <% if(cuest > 1 && cuest != 2) { %>
         <div class="alert alert-dark" role="alert">
             <center>
                 <span class="material-symbols-outlined" style="font-size: 40px;">stadia_controller</span>
@@ -64,12 +65,28 @@
                 <span class="material-symbols-outlined">flutter_dash</span>
             </a>
             <span style="margin-left: 2px;">Flappy Bird 3D</span>
+            <br><br>
+            <a class="btn btn-dark" href="/dashboard/game/3?id=<%= id %>" role="button">
+                <span class="material-symbols-outlined">apps</span>
+            </a>
+            <span style="margin-left: 2px;">Tres en Raya</span>
         </div>
         
-        <% if(typeof cuest !== 'undefined' && cuest !== null) { %>
         <div class="alert alert-dark" role="alert">
             <center>
                 <span>Intentos disponibles: <strong><%= cuest - 2 %></strong></span>
+            </center>
+        </div>
+        
+        <% } else { %>
+        
+        <div class="alert alert-dark" role="alert">
+            <center>
+                <span class="material-symbols-outlined" style="font-size: 40px;">block</span>
+                <br><br>
+                <strong>No tienes intentos</strong>
+                <br><br>
+                <small>Los intentos se recargan todos los días</small>
             </center>
         </div>
         <% } %>

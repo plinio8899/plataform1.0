@@ -1,5 +1,6 @@
 import { db } from "../db/index.js";
 import { getAllPosts, createPost, toggleReaction, createComment, updatePost, deletePost } from "../Services/feed.services.js";
+import { eventEmitter } from "../Utils/events.js";
 
 export const getFeed = async (req, res) => {
     try {
@@ -58,6 +59,34 @@ export const postReaction = async (req, res) => {
         const postId = parseInt(req.query.postId);
         
         await toggleReaction(postId, id, 'like');
+
+        // Intentar enviar notificacion sin romper el flujo
+        try {
+            const post = await db.post.findUnique({
+                where: { id: postId },
+                select: { authorId: true, description: true }
+            });
+            
+            const user = await db.users.findUnique({
+                where: { id },
+                select: { name: true }
+            });
+            
+            // Enviar notificacion al autor del post si no soy yo mismo
+            if(post && user && post.authorId !== id) {
+                eventEmitter.broadcast('notification', {
+                    userId: post.authorId,
+                    type: 'like',
+                    userName: user.name,
+                    postId: postId,
+                    postPreview: post.description ? post.description.substring(0, 50) : '',
+                    timestamp: new Date().toISOString()
+                });
+            }
+        } catch (notificationError) {
+            // Ignorar errores de notificacion, no afectar la funcionalidad principal
+            console.log('Error al enviar notificacion:', notificationError.message);
+        }
         
         res.redirect(`/feed?id=${id}`);
     } catch (error) {
@@ -76,6 +105,35 @@ export const postComment = async (req, res) => {
         }
         
         await createComment(postId, id, comment.trim());
+
+        // Intentar enviar notificacion sin romper el flujo
+        try {
+            const post = await db.post.findUnique({
+                where: { id: postId },
+                select: { authorId: true, description: true }
+            });
+            
+            const user = await db.users.findUnique({
+                where: { id },
+                select: { name: true }
+            });
+            
+            // Enviar notificacion al autor del post si no soy yo mismo
+            if(post && user && post.authorId !== id) {
+                eventEmitter.broadcast('notification', {
+                    userId: post.authorId,
+                    type: 'comment',
+                    userName: user.name,
+                    commentText: comment.trim(),
+                    postId: postId,
+                    postPreview: post.description ? post.description.substring(0, 50) : '',
+                    timestamp: new Date().toISOString()
+                });
+            }
+        } catch (notificationError) {
+            // Ignorar errores de notificacion, no afectar la funcionalidad principal
+            console.log('Error al enviar notificacion:', notificationError.message);
+        }
         
         res.redirect(`/feed?id=${id}`);
     } catch (error) {

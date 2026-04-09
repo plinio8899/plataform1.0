@@ -16,6 +16,7 @@
         .bac {
             display: flex !important;
             align-items: center;
+            justify-content: space-between;
         }
 
         @keyframes fadeIn {
@@ -203,18 +204,232 @@
         .btn-cancel:hover {
             background-color: #5a6268;
         }
+
+        /* Emoji Picker Styles */
+        .emoji-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            color: #6c757d;
+            position: relative;
+        }
+
+        .emoji-btn:hover {
+            background-color: rgba(0,0,0,0.1);
+            color: #343a40;
+        }
+
+        .emoji-picker {
+            position: absolute;
+            bottom: 50px;
+            right: 0;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            padding: 12px;
+            z-index: 1000;
+            display: none;
+            max-width: 320px;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .emoji-picker.active {
+            display: block;
+        }
+
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .emoji-item {
+            font-size: 1.4rem;
+            padding: 6px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background-color 0.15s ease;
+            text-align: center;
+            background: none;
+            border: none;
+        }
+
+        .emoji-item:hover {
+            background-color: #f1f3f5;
+            transform: scale(1.2);
+        }
+
+        .input-group-with-emoji {
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+        }
+
+        .form-group .input-group-with-emoji {
+            margin-bottom: 0;
+        }
+
+        .input-group-with-emoji textarea {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        /* Floating Action Button - Header Style */
+        .fab-button {
+            width: auto !important;
+            height: 38px !important;
+            padding: 0 16px !important;
+            border-radius: 4px !important;
+            background-color: #343a40 !important;
+            color: white !important;
+            border: none !important;
+            cursor: pointer !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            margin: 0 !important;
+            margin-top: 1em !important;
+        }
+
+        .fab-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+        }
+
+        .fab-button.active {
+            transform: rotate(45deg);
+            background-color: #dc3545;
+        }
+
+        .fab-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1040;
+            display: none;
+            backdrop-filter: blur(2px);
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .fab-overlay.active {
+            display: block;
+        }
+
+        .fab-form-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 20px 20px 0 0;
+            padding: 24px;
+            padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+            z-index: 100000 !important;
+            transform: translateY(100%);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+        }
+
+        .fab-form-container.active {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        /* Notifications Panel */
+        .notification-panel {
+            position: absolute;
+            top: 80px;
+            right: 0;
+            width: 350px;
+            max-height: 400px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: none;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .notification-panel.active {
+            display: block;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .notification-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f3f5;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+
+        .notification-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+
+        .notification-text {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-bottom: 4px;
+        }
+
+        .notification-time {
+            font-size: 0.75rem;
+            color: #adb5bd;
+        }
+
+        @media (min-width: 768px) {
+            .fab-form-container {
+                max-width: 500px;
+                margin: 0 auto;
+                bottom: 0;
+                border-radius: 16px 16px 0 0;
+            }
+        }
     </style>
     <title>Feed - Estados</title>
 </head>
 <body>
     <div class="container fade">
         <div class="bac">
-            <a class="btn btn-dark" href="/dashboard?id=<%= id %>" style="margin-top: 1em;">
-                <span class="material-symbols-outlined">arrow_back</span>
-            </a>
-            <span style="margin-left: 10px; margin-top: 1em; font-size: 1.2rem;">
-                <strong>Estados</strong>
-            </span>
+            <div style="display: flex; align-items: center;">
+                <a class="btn btn-dark" href="/dashboard?id=<%= id %>" style="margin-top: 1em;">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                </a>
+                <span style="margin-left: 10px; margin-top: 1em; font-size: 1.2rem;">
+                    <strong>Estados</strong>
+                </span>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <button class="fab-button btn btn-dark" id="notificationBtn" onclick="toggleNotificationPanel()">
+                    <span class="material-symbols-outlined">notifications</span>
+                </button>
+                <button class="fab-button btn btn-dark" id="fabBtn" onclick="toggleFabForm()">
+                    <span class="material-symbols-outlined">add</span>
+                </button>
+            </div>
         </div>
         <br>
         <center>
@@ -222,30 +437,7 @@
             <hr>
         </center>
 
-        <!-- Formulario para crear post -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <form action="/feed?id=<%= id %>" method="POST">
-                    <div class="form-group">
-                        <label for="description"><strong>¿Qué estás pensando?</strong></label>
-                        <textarea 
-                            class="form-control" 
-                            id="description" 
-                            name="description" 
-                            rows="3" 
-                            placeholder="Escribe tu estado aquí..."
-                            required
-                        ></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-dark">
-                        <span class="material-symbols-outlined" style="font-size: 1.2rem; vertical-align: middle;">
-                            send
-                        </span>
-                        Publicar
-                    </button>
-                </form>
-            </div>
-        </div>
+
 
         <!-- Lista de posts -->
         <div class="posts-container">
@@ -377,7 +569,130 @@
         <br><br>
     </div>
 
+
+
+    <!-- Notifications Panel -->
+    <div class="notification-panel" id="notificationPanel">
+        <div id="notificationList">
+            <div style="padding: 32px; text-align: center; color: #6c757d;">
+                <span class="material-symbols-outlined" style="font-size: 3rem; display: block; margin-bottom: 8px;">notifications_off</span>
+                No hay notificaciones
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay Background -->
+    <div class="fab-overlay" id="fabOverlay" onclick="toggleFabForm()"></div>
+
+    <!-- Floating Form Container -->
+    <div class="fab-form-container" id="fabFormContainer">
+        <form action="/feed?id=<%= id %>" method="POST">
+            <div class="form-group">
+                <label for="fab-description"><strong>¿Qué estás pensando?</strong></label>
+                <div class="input-group-with-emoji">
+                    <textarea 
+                        class="form-control" 
+                        id="fab-description" 
+                        name="description" 
+                        rows="3" 
+                        placeholder="Escribe tu estado aquí..."
+                        required
+                    ></textarea>
+                    <button type="button" class="emoji-btn" onclick="event.preventDefault(); event.stopPropagation(); toggleEmojiPicker('fab-description'); return false;">
+                        <span class="material-symbols-outlined">sentiment_satisfied</span>
+                        <div class="emoji-picker" id="emoji-picker-fab-description"></div>
+                    </button>
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-secondary flex-grow-1" onclick="toggleFabForm()">Cancelar</button>
+                <button type="submit" class="btn btn-dark flex-grow-1">
+                    <span class="material-symbols-outlined" style="font-size: 1.2rem; vertical-align: middle;">
+                        send
+                    </span>
+                    Publicar
+                </button>
+            </div>
+        </form>
+    </div>
+
     <script>
+        function toggleFabForm() {
+            const btn = document.getElementById('fabBtn');
+            const overlay = document.getElementById('fabOverlay');
+            const container = document.getElementById('fabFormContainer');
+            const textarea = document.getElementById('fab-description');
+            
+            btn.classList.toggle('active');
+            overlay.classList.toggle('active');
+            container.classList.toggle('active');
+            
+            if(container.classList.contains('active')) {
+                setTimeout(() => textarea.focus(), 300);
+            } else {
+                textarea.value = '';
+            }
+        }
+
+        // Emoji Picker Implementation
+        const commonEmojis = ['😀','😂','🥰','😍','🤩','😊','😎','🥳','😇','🤗','😋','🤔','😴','🤤','😌','🙂','😉','😜','🤪','😱','😭','😤','😡','🤬','🥺','😢','🙄','😬','😷','🤒','👍','👎','👌','✌️','🤞','🤝','❤️','💔','💯','✨','🔥','🎉','🎊','💪','🙏','👏','🤲','💡','⭐','🌟','💫','✅','❌','⚠️','💀','👻','🤡','🎁','🎂','🍕','🍔','🌮','🍩','☕','🍺','🍷','🏆','⚽','🎮','🎵','📸','💻','📱','✈️','🚗','🏠','🌎','☀️','🌙','⭐','🌈','❄️','🔥','💧','🌊'];
+
+        function insertEmojiAtCursor(textarea, emoji) {
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const text = textarea.value;
+            
+            textarea.value = text.substring(0, start) + emoji + text.substring(end);
+            textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
+            textarea.focus();
+        }
+
+        function toggleEmojiPicker(inputId, event) {
+            if(event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            const picker = document.getElementById('emoji-picker-' + inputId);
+            const allPickers = document.querySelectorAll('.emoji-picker');
+            
+            allPickers.forEach(p => {
+                if (p !== picker) p.classList.remove('active');
+            });
+            
+            picker.classList.toggle('active');
+            
+            if (picker.classList.contains('active') && picker.children.length === 0) {
+                const grid = document.createElement('div');
+                grid.className = 'emoji-grid';
+                
+                commonEmojis.forEach(emoji => {
+                    const btn = document.createElement('button');
+                    btn.className = 'emoji-item';
+                    btn.textContent = emoji;
+                    btn.type = 'button';
+                    btn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const textarea = document.getElementById(inputId);
+                        insertEmojiAtCursor(textarea, emoji);
+                        picker.classList.remove('active');
+                        return false;
+                    };
+                    grid.appendChild(btn);
+                });
+                
+                picker.appendChild(grid);
+            }
+            
+            return false;
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.emoji-btn')) {
+                document.querySelectorAll('.emoji-picker').forEach(p => p.classList.remove('active'));
+            }
+        });
         // SSE connection for real-time updates
         let eventSource;
         const currentUserId = <%= id %>;
@@ -392,6 +707,22 @@
             
             eventSource.addEventListener('connected', (e) => {
                 console.log('Connected to real-time updates');
+            });
+
+            // ✅ NOTIFICACIONES: Listener agregado CORRECTAMENTE aqui dentro despues de crear eventSource
+            eventSource.addEventListener('notification', (e) => {
+                try {
+                    const data = JSON.parse(e.data);
+                    console.log('📩 NOTIFICACION RECIBIDA:', data);
+                    
+                    // Solo mostrar notificaciones que son para mi
+                    if(data.userId === currentUserId) {
+                        console.log('📩 NOTIFICACION PARA MI:', data);
+                        addNotification(data);
+                    }
+                } catch(err) {
+                    console.log('❌ Error parseando notificacion:', err, e.data);
+                }
             });
             
             eventSource.onerror = () => {
@@ -550,6 +881,61 @@
         
         // Initialize SSE connection
         connectSSE();
+
+        function toggleNotificationPanel() {
+            const panel = document.getElementById('notificationPanel');
+            panel.classList.toggle('active');
+        }
+
+        // Close panel when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#notificationBtn') && !e.target.closest('#notificationPanel')) {
+                document.getElementById('notificationPanel').classList.remove('active');
+            }
+        });
+
+        // ✅ Sistema de Notificaciones
+        let notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+
+        function renderNotifications() {
+            const list = document.getElementById('notificationList');
+            
+            if(notifications.length === 0) {
+                list.innerHTML = `
+                    <div style="padding: 32px; text-align: center; color: #6c757d;">
+                        <span class="material-symbols-outlined" style="font-size: 3rem; display: block; margin-bottom: 8px;">notifications_off</span>
+                        No hay notificaciones
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = notifications.map(n => `
+                <div class="notification-item" data-id="${n.id}">
+                    <div class="notification-title">${n.type === 'like' ? '❤️  Le dieron like' : '💬  Nuevo comentario'}</div>
+                    <div class="notification-text">${n.userName} ${n.type === 'like' ? 'le dio like a tu publicación' : `comentó: "${n.commentText}"`}</div>
+                    <div class="notification-time">${new Date(n.timestamp).toLocaleString()}</div>
+                </div>
+            `).reverse().join('');
+        }
+
+        function addNotification(data) {
+            data.id = Date.now();
+            notifications.unshift(data);
+            
+            // Guardar maximo 50 notificaciones
+            if(notifications.length > 50) {
+                notifications = notifications.slice(0, 50);
+            }
+            
+            localStorage.setItem('notifications', JSON.stringify(notifications));
+            renderNotifications();
+        }
+
+
+
+        // Initialize notifications on load
+        renderNotifications();
         
         function toggleComments(postId) {
             const section = document.getElementById('comments-' + postId);

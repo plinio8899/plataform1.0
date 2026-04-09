@@ -10,50 +10,44 @@ import dashRoute from "./Routes/dashboard.routes.js"
 import feedRoute from "./Routes/feed.routes.js"
 import { db } from "./db/index.js"
 import { eventEmitter } from "./Utils/events.js"
+import { getIndex } from "./Controllers/index.controllers.js"
+import { errorHandler, notFound } from "./Middlewares/error.middleware.js"
 
 const port = process.env.PORT || 3000;
 
-//Arreglando lo de la ubicacion de ejs
+// Arreglando lo de la ubicacion de ejs
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
+
+// Middlewares globales
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cors());
 
+// Configuración de EJS
 app.set('view engine', 'ejs');
-app.set('views', __dirname + '/views')
-
+app.set('views', __dirname + '/views');
 app.use(express.static(__dirname + '/views'));
 
+// Middleware para prevenir caché
 app.use((req, res, next) => {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
-    next(); // Continúa con el manejo de la solicitud
-  });
+    next();
+});
 
-app.use(cors());
+// Rutas
 app.use("/", userRoute);
 app.use("/auth", authRoute);
 app.use("/dashboard", dashRoute);
 app.use("/feed", feedRoute);
 app.use(express.json());
 
-app.get('/', async(req, res) => {
-    try {
-        const tPoints = await db.points.findMany({
-            where: {
-                id: 1
-            }
-        })
-        const pMan = parseInt(tPoints[0].man)
-        const pWoman = parseInt(tPoints[0].woman)
-        res.render('index', {id: 123, pMan, pWoman})
-    } catch (error) {
-        res.send(error.message)
-    }
-})
+// Ruta principal
+app.get('/', getIndex);
 
 // SSE endpoint for real-time updates
 app.get('/events', (req, res) => {
@@ -82,6 +76,10 @@ app.get('/events', (req, res) => {
         eventEmitter.removeClient(res);
     });
 });
+
+// Middlewares de manejo de errores (deben ir al final)
+app.use(notFound);
+app.use(errorHandler);
 
 app.listen(port || 3000, () => {
     console.log("[+]listening on port: " + port)
